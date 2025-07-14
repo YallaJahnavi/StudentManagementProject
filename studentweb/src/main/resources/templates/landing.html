@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #6dd5ed, #2193b0);
+            color: white;
+            text-align: center;
+            padding-top: 100px;
+            font-family: Arial, sans-serif;
+        }
+        .btn {
+            background-color: white;
+            color: #2193b0;
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+        .btn:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Student Management System</h1>
+    <p>Click the button below to begin.</p>
+    <a href="/form"><button class="btn">Go In</button></a>
+</body>
+</html>
