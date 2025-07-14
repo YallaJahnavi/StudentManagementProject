@@ -2,6 +2,7 @@ package com.example.studentweb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,57 +17,62 @@ class InvalidCredentialsException extends RuntimeException {
 @Controller
 public class StudentController {
 
-    /* -------- In‑memory storage (swap for DB later) -------- */
-    private final List<User>    userList    = new ArrayList<>();
+    /* ---------  Dependencies  --------- */
+    private final UserRepository userRepo;                 // <‑‑ replaces in‑memory userList
+
+    /* ---------  In‑memory students list (unchanged)  --------- */
     private final List<Student> studentList = new ArrayList<>();
+
+    /* ---------  Constructor injection  --------- */
+    public StudentController(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
 
     /* ---------------- Landing ---------------- */
     @GetMapping("/")
-    public String landing() { return "landing"; }          // templates/landing.html
+    public String landing() {
+        return "landing";                                  // templates/landing.html
+    }
 
     /* ---------------- Registration ---------------- */
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";                                  // templates/register.html
+        return "register";                                 // templates/register.html
     }
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user,
                                RedirectAttributes ra,
                                Model model) {
-        /* duplicate username check */
-        for (User u : userList)
-            if (u.getUsername().equalsIgnoreCase(user.getUsername())) {
-                model.addAttribute("error", "Username already exists!");
-                return "register";
-            }
-        userList.add(user);                                 // save user
+
+        /* duplicate username check (now via DB) */
+        if (userRepo.findByUsernameIgnoreCase(user.getUsername()).isPresent()) {
+            model.addAttribute("error", "Username already exists!");
+            return "register";
+        }
+
+        userRepo.save(user);                               // persist user
         ra.addFlashAttribute("message", "User registered successfully!");
         return "redirect:/login";
     }
 
-    /* ---------- LOGIN (GET) ---------- */
+    /* ---------------- Login ---------------- */
     @GetMapping("/login")
     public String loginPage(Model model,
                             @ModelAttribute("error") String error) {
         model.addAttribute("error", error);
-        return "login";
+        return "login";                                    // templates/login.html
     }
 
-    /* ---------- LOGIN (POST) ---------- */
     @PostMapping("/login")
     public String doLogin(@RequestParam String username,
                           @RequestParam String password) {
 
-        for (User u : userList) {
-            if (u.getUsername().equalsIgnoreCase(username)
-                    && u.getPassword().equals(password)) {
-                return "redirect:/index"; // successful login
-            }
+        Optional<User> opt = userRepo.findByUsernameIgnoreCase(username);
+        if (opt.isPresent() && opt.get().getPassword().equals(password)) {
+            return "redirect:/index";                      // successful login
         }
-
-        // If not found: throw exception
         throw new InvalidCredentialsException("Invalid username or password");
     }
 
@@ -77,22 +83,25 @@ public class StudentController {
         redirect.addFlashAttribute("error", ex.getMessage());
         return "redirect:/login";
     }
-    
+
     /* ---------------- Student page (index.html) ---------------- */
     @GetMapping("/index")
     public String studentPage(Model model) {
         model.addAttribute("student", new Student());
-        return "index";                                   // templates/index.html
+        return "index";                                    // templates/index.html
     }
 
     @PostMapping("/addStudent")
     public String addStudent(@ModelAttribute Student student, Model model) {
-        for (Student s : studentList)
+
+        /* duplicate student‑ID check (unchanged) */
+        for (Student s : studentList) {
             if (s.getId() == student.getId()) {
                 model.addAttribute("error", "User ID already exists!");
                 model.addAttribute("student", new Student());
                 return "index";
             }
+        }
 
         studentList.add(student);
         model.addAttribute("message", "Student added successfully!");
@@ -103,7 +112,8 @@ public class StudentController {
     @GetMapping("/viewStudents")
     public String viewStudents(Model model) {
         model.addAttribute("students", studentList);
-        return "students";                                // templates/students.html
+        return "students";                                 // templates/students.html
     }
 }
+
 
