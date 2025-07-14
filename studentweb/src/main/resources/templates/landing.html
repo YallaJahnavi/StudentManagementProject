@@ -5,31 +5,56 @@
     <title>Welcome</title>
     <style>
         body {
-            background: linear-gradient(to right, #6dd5ed, #2193b0);
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             color: white;
-            text-align: center;
-            padding-top: 100px;
-            font-family: Arial, sans-serif;
+            margin: 0;
         }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 30px;
+        }
+
         .btn {
             background-color: white;
-            color: #2193b0;
-            padding: 12px 24px;
+            color: #00b09b;
+            padding: 15px 30px;
             font-size: 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 30px;
+            transition: all 0.3s ease-in-out;
         }
+
         .btn:hover {
-            background-color: #f1f1f1;
+            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Student Management System</h1>
-    <p>Click the button below to begin.</p>
-    <a href="/form"><button class="btn">Go In</button></a>
+    <h1>Welcome to Student Management System</h1>
+    <p>Please choose an option below:</p>
+    <div class="buttons">
+ 
+		<a href="/register"><button class="btn">Register</button></a>
+
+        <a href="/login"><button class="btn">Login</button></a>
+    </div>
 </body>
 </html>
