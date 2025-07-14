@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title> Student Management System </title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+        input, button { margin: 10px; padding: 8px; }
+    </style>
+</head>
+<body>
+    <h2>Student Management Form</h2>
+    
+    <form th:action="@{/addStudent}" th:object="${student}" method="post">
+        ID: <input type="number" th:field="*{id}" required /><br />
+        Name: <input type="text" th:field="*{name}" required /><br />
+        Age: <input type="number" th:field="*{age}" required /><br />
+        <button type="submit">Add Student</button>
+    </form>
+
+    <p th:text="${message}"></p>
+    <a href="/viewStudents">View All Students</a>
+</body>
+</html>
