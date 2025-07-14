@@ -9,7 +9,11 @@
 </head>
 <body>
     <h2>Student Management Form</h2>
-    
+
+    <!-- Messages -->
+    <p th:if="${message}" th:text="${message}" style="color:green;"></p>
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
     <form th:action="@{/addStudent}" th:object="${student}" method="post">
         ID: <input type="number" th:field="*{id}" required /><br />
         Name: <input type="text" th:field="*{name}" required /><br />
@@ -17,7 +21,7 @@
         <button type="submit">Add Student</button>
     </form>
 
-    <p th:text="${message}"></p>
     <a href="/viewStudents">View All Students</a>
 </body>
+
 </html>
